@@ -2,11 +2,6 @@ part of 'pokemon_detail_bloc.dart';
 
 abstract class PokemonDetailEvent extends Equatable {}
 
-class InitialPokemonDetailEvent extends PokemonDetailEvent {
-  @override
-  List<Object> get props => [];
-}
-
 class SetPokemonEvent extends PokemonDetailEvent {
   final Pokemon pokemon;
 

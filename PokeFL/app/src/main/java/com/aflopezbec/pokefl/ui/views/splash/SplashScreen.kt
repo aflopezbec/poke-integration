@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.aflopezbec.pokefl.R
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.delay
@@ -32,7 +33,7 @@ fun SplashScreen(navController: NavController) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_animation))
     val progress by animateLottieCompositionAsState(
         composition,
-        iterations = 1,
+        iterations = LottieConstants.IterateForever,
         isPlaying = true
     )
 

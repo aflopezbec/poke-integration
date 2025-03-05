@@ -7,9 +7,13 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         NamedRouteDef(
-            initial: true,
-            name: PokemonDetailRoute.name,
-            path: '/pokemon/:id',
-            builder: (context, data) => PokemonDetailScreen(id: data.params.getInt('id', 6))),
+          initial: true,
+          keepHistory: false,
+          name: PokemonDetailRoute.name,
+          path: '/pokemon/:id',
+          builder: (context, data) => PokemonDetailScreen(
+            id: data.params.getInt('id', 0),
+          ),
+        ),
       ];
 }

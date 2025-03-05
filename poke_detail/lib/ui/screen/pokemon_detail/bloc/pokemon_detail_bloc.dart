@@ -26,18 +26,9 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
     this._getAbilitiesUseCase,
     this._getMovesUseCase,
   ) : super(const PokemonDetailState()) {
-    on<InitialPokemonDetailEvent>(_onInitialPokemonDetail);
     on<SetPokemonEvent>(_onSetPokemon);
     on<BackPokemonDetailEvent>(_onBackPokemonDetail);
     on<ValueReceivedEvent>(_onValueReceived);
-  }
-
-  Future<void> _onInitialPokemonDetail(
-    InitialPokemonDetailEvent event,
-    Emitter<PokemonDetailState> emit,
-  ) async {
-    final pokemon = await _getPokemonUseCase(1);
-    emit(state.copyWith(pokemon: () => pokemon, isLoading: false));
   }
 
   void _onSetPokemon(SetPokemonEvent event, Emitter<PokemonDetailState> emit) {
@@ -57,8 +48,7 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
   ) async {
     emit(state.copyWith(isLoading: true, pokemon: () => null));
     try {
-      final localPokemon = await _pokemonDatabase.getPokemonById(1);
-      print("LOCAL POKEMON -> ${localPokemon}");
+      final localPokemon = await _pokemonDatabase.getPokemonById(event.value);
     } catch (e) {
       print("ERROR -> ${e}");
     }

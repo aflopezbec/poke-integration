@@ -1,8 +1,9 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poke_detail/core/di/poke_locator.dart';
 import 'package:poke_detail/core/extension/string_ext.dart';
+import 'package:poke_detail/l10n/app_localizations.dart';
 import 'package:poke_detail/ui/design_system/tokens/poke_colors.dart';
 import 'package:poke_detail/ui/design_system/tokens/poke_text_style.dart';
 import 'package:poke_detail/ui/screen/pokemon_detail/bloc/pokemon_detail_bloc.dart';
@@ -51,7 +52,10 @@ class PokemonDetailScreenState extends State<PokemonDetailScreen> {
                   Icons.arrow_back_ios,
                   color: PokeColors.grey,
                 ),
-                onPressed: () => _bloc.add(BackPokemonDetailEvent()),
+                onPressed: () {
+                  _bloc.add(BackPokemonDetailEvent());
+                  context.router.pop();
+                },
               ),
               centerTitle: true,
               title: Text(
@@ -68,8 +72,14 @@ class PokemonDetailScreenState extends State<PokemonDetailScreen> {
                   );
                 }
                 if (!state.isLoading && state.pokemon == null) {
-                  return const Center(
-                    child: Text('Something went wrong'),
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text(
+                        AppLocalizations.current.not_internet,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   );
                 }
                 return PokemonDetailWidget(pokemon: state.pokemon!);

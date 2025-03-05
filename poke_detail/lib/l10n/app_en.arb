@@ -1,4 +1,5 @@
 {
     "ability_title":"Abilities",
-    "moves_title":"Moves"
+    "moves_title":"Moves",
+    "not_internet": "The information cannot be displayed at this time, please check your internet connection"
 }

@@ -8,14 +8,16 @@ import com.aflopezbec.pokefl.domain.model.Pokemon
 data class PokemonEntity(
     @PrimaryKey val id: Int,
     val name: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val imageFilePath: String?
 )
 
 fun Pokemon.toEntity(): PokemonEntity {
     return PokemonEntity(
         id = this.id,
         name = this.name,
-        imageUrl = this.imageUrl
+        imageUrl = this.imageUrl,
+        imageFilePath = null,
     )
 }
 
@@ -23,6 +25,7 @@ fun PokemonEntity.toDomain(): Pokemon {
     return Pokemon(
         id = this.id,
         name = this.name,
-        imageUrl = this.imageUrl
+        imageUrl = this.imageUrl,
+        imageFilePath = null,
     )
 }

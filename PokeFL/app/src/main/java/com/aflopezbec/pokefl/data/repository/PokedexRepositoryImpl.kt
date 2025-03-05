@@ -30,14 +30,19 @@ class PokedexRepositoryImpl(
 ) : PokedexRepository {
     override suspend fun getPokemonList(offset: Int): ServerResponse<List<Pokemon>> {
         return try {
+            val localData = pokemonDao.getAllByLimit(offset, Constants.LIMIT).map { it.toDomain() }
+            if (localData.isNotEmpty()) {
+                return ServerResponse.Success(localData)
+            }
             val response = api.getPokemonList(offset = offset, limit = Constants.LIMIT)
             val pokemonList = response.results.map { item ->
                 val id = item.url.split("/").dropLast(1).last().toInt()
-                val imageUrl = Constants.IMAGE_URL.replace(Constants.POKEMON_ID, id.toString())
+                val imageUrl = Constants.IMAGE_URL_LOW.replace(Constants.POKEMON_ID, id.toString())
                 Pokemon(
                     id,
                     item.name,
-                    imageUrl
+                    imageUrl,
+                    null
                 )
             }
             CoroutineScope(Dispatchers.IO).launch {
@@ -45,12 +50,7 @@ class PokedexRepositoryImpl(
             }
             ServerResponse.Success(pokemonList)
         } catch (e: Exception) {
-            val localData = pokemonDao.getAllByLimit(offset, Constants.LIMIT).map { it.toDomain() }
-            if (localData.isNotEmpty()) {
-                ServerResponse.Success(localData)
-            } else {
-                ServerResponse.Error(e)
-            }
+            ServerResponse.Error(e)
         }
     }
 
@@ -69,8 +69,8 @@ class PokedexRepositoryImpl(
 
     private suspend fun saveToLocal(pokemons: List<Pokemon>) {
         val pokemonList = pokemons.map { pokemon ->
-            val imageUrl = cacheImage(pokemon.imageUrl, pokemon.id)
-            pokemon.copy(imageUrl = imageUrl ?: pokemon.imageUrl)
+            val imagePath = cacheImage(pokemon.imageUrl, pokemon.id)
+            pokemon.copy(imageFilePath = imagePath)
         }
         pokemonDao.insertAll(pokemonList.map { it.toEntity() })
     }

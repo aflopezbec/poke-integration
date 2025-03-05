@@ -1,4 +1,5 @@
 {
     "ability_title":"Habilidades",
-    "moves_title":"Ataques"
+    "moves_title":"Movimientos",
+    "not_internet": "No se puede mostrar la información en este momento, por favor revisa tu conexión a internet"
 }

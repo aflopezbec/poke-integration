@@ -60,6 +60,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.engine.FlutterEngine
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
 import java.util.Locale
 
 @Composable
@@ -229,13 +230,23 @@ fun PokemonItem(
                 val painter = rememberAsyncImagePainter(
                     imageUrl,
                 )
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        pokemon.imageUrl,
-                    ),
-                    contentDescription = pokemon.name,
-                    modifier = Modifier.size(120.dp)
-                )
+                if (pokemon.imageFilePath != null) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            File(pokemon.imageFilePath),
+                        ),
+                        contentDescription = pokemon.name,
+                        modifier = Modifier.size(120.dp)
+                    )
+                } else {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            pokemon.imageUrl,
+                        ),
+                        contentDescription = pokemon.name,
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
 
                 LaunchedEffect(painter) {
                     if (painter.state.value is AsyncImagePainter.State.Error) {

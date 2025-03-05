@@ -18,22 +18,23 @@ class PokemonDetailWidget extends StatelessWidget {
       child: Column(
         children: [
           FutureBuilder(
-              future: ColorScheme.fromImageProvider(provider: provider),
-              builder: (ctx, snap) {
-                return Container(
-                  margin: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: snap.data?.onInverseSurface,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: pokemon.imageHD,
-                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                        CircularProgressIndicator(value: downloadProgress.progress),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                  ),
-                );
-              }),
+            future: ColorScheme.fromImageProvider(provider: provider),
+            builder: (ctx, snap) {
+              return Container(
+                margin: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: snap.data?.onInverseSurface,
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: pokemon.imageHD,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              );
+            },
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ExpansionTile(

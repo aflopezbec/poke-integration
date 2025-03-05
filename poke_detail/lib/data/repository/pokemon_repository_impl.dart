@@ -49,7 +49,8 @@ class PokemonRepositoryImpl implements PokemonRepository {
     List<MoveDto> moves,
   ) async {
     try {
-      final futures = moves.where((move) => move.url != null).toList().map((move) => _httpProvider.get(move.url!));
+      final futures =
+          moves.sublist(0, 10).where((move) => move.url != null).toList().map((move) => _httpProvider.get(move.url!));
 
       final responses = await Future.wait(futures);
       final movesDto = responses.map((response) => MoveDto.fromJson(response.data)).toList();
