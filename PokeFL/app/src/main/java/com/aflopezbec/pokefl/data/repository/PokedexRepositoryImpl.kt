@@ -80,7 +80,7 @@ class PokedexRepositoryImpl(
             val loader = ImageLoader(context)
             val request = ImageRequest.Builder(context)
                 .data(imageUrl)
-                .allowHardware(false) // Necesario para obtener un Bitmap
+                .allowHardware(false)
                 .build()
 
             val result = (loader.execute(request) as? SuccessResult)?.image
