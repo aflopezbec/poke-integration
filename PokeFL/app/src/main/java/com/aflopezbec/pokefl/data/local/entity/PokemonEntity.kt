@@ -17,7 +17,7 @@ fun Pokemon.toEntity(): PokemonEntity {
         id = this.id,
         name = this.name,
         imageUrl = this.imageUrl,
-        imageFilePath = null,
+        imageFilePath = imageFilePath,
     )
 }
 
@@ -26,6 +26,6 @@ fun PokemonEntity.toDomain(): Pokemon {
         id = this.id,
         name = this.name,
         imageUrl = this.imageUrl,
-        imageFilePath = null,
+        imageFilePath = imageFilePath,
     )
 }

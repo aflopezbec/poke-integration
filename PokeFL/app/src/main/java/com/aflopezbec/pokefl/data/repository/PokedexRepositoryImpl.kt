@@ -30,10 +30,6 @@ class PokedexRepositoryImpl(
 ) : PokedexRepository {
     override suspend fun getPokemonList(offset: Int): ServerResponse<List<Pokemon>> {
         return try {
-            val localData = pokemonDao.getAllByLimit(offset, Constants.LIMIT).map { it.toDomain() }
-            if (localData.isNotEmpty()) {
-                return ServerResponse.Success(localData)
-            }
             val response = api.getPokemonList(offset = offset, limit = Constants.LIMIT)
             val pokemonList = response.results.map { item ->
                 val id = item.url.split("/").dropLast(1).last().toInt()
@@ -42,23 +38,29 @@ class PokedexRepositoryImpl(
                     id,
                     item.name,
                     imageUrl,
-                    null
+                    pokemonDao.getById(id)?.imageFilePath
                 )
             }
-            CoroutineScope(Dispatchers.IO).launch {
-                saveToLocal(pokemonList)
-            }
+            saveToLocal(pokemonList)
             ServerResponse.Success(pokemonList)
         } catch (e: Exception) {
+            val localData = pokemonDao.getAllByLimit(offset, Constants.LIMIT).map { it.toDomain() }
+            if (localData.isNotEmpty()) {
+                return ServerResponse.Success(localData)
+            }
             ServerResponse.Error(e)
         }
     }
 
     override suspend fun getPokemonDetails(id: Int): ServerResponse<Pokemon> {
         return try {
+            val localPokemon = pokemonDao.getById(id)?.toDomain()
+            if (localPokemon?.imageFilePath != null) {
+                return ServerResponse.Success(localPokemon)
+            }
             val response = api.getPokemonDetails(id)
             val pokemon = response.toDomain()
-            pokemonDao.insert(pokemon.toEntity())
+            saveToLocal(listOf(pokemon))
             ServerResponse.Success(pokemon)
         } catch (e: Exception) {
             pokemonDao.getById(id)?.toDomain()?.let {
@@ -67,12 +69,15 @@ class PokedexRepositoryImpl(
         }
     }
 
-    private suspend fun saveToLocal(pokemons: List<Pokemon>) {
-        val pokemonList = pokemons.map { pokemon ->
-            val imagePath = cacheImage(pokemon.imageUrl, pokemon.id)
-            pokemon.copy(imageFilePath = imagePath)
+    private fun saveToLocal(pokemons: List<Pokemon>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            pokemons.map { pokemon ->
+                val imagePath = cacheImage(pokemon.imageUrl, pokemon.id)
+                val newPokemon = pokemon.copy(imageFilePath = imagePath)
+                pokemonDao.insert(newPokemon.toEntity())
+            }
         }
-        pokemonDao.insertAll(pokemonList.map { it.toEntity() })
+
     }
 
     private suspend fun cacheImage(imageUrl: String, pokemonId: Int): String? {

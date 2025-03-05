@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -242,9 +243,11 @@ fun PokemonItem(
                     Image(
                         painter = rememberAsyncImagePainter(
                             pokemon.imageUrl,
+                            error = painterResource(id = R.drawable.ic_pokeball),
+                            placeholder = painterResource(id = R.drawable.ic_pokeball)
                         ),
                         contentDescription = pokemon.name,
-                        modifier = Modifier.size(120.dp)
+                        modifier = Modifier.size(120.dp),
                     )
                 }
 
